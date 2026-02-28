@@ -3,995 +3,1013 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>فرم سفارش پروپوزل</title>
+<title>سفارش پروپوزل</title>
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #0a0a0f;
-  --surface: #12121a;
-  --surface2: #1a1a26;
-  --border: #ffffff0f;
-  --border-hover: #ffffff20;
-  --accent: #7c6af7;
-  --accent2: #c084fc;
-  --accent-glow: rgba(124,106,247,0.3);
-  --gold: #f0b429;
-  --text: #f0eeff;
-  --text-muted: #8b87a8;
-  --text-dim: #4a4660;
-  --success: #34d399;
-  --error: #f87171;
-  --radius: 14px;
+  --bg:       #04040a;
+  --s1:       #0d0d18;
+  --s2:       #131325;
+  --s3:       #1a1a35;
+  --border:   rgba(255,255,255,0.06);
+  --border-a: rgba(99,179,237,0.35);
+  --a1: #63b3ed;
+  --a2: #9f7aea;
+  --a3: #f6ad55;
+  --a4: #68d391;
+  --glow1: rgba(99,179,237,0.25);
+  --glow2: rgba(159,122,234,0.2);
+  --text:  #eef2ff;
+  --muted: #7c85b0;
+  --dim:   #3d4270;
+  --r: 16px;
 }
 
-* { margin:0; padding:0; box-sizing:border-box; }
+*{margin:0;padding:0;box-sizing:border-box;}
+::selection{background:var(--a2);color:#fff;}
 
-::selection { background: var(--accent); color: white; }
+html{scroll-behavior:smooth;}
 
-html { scroll-behavior: smooth; }
-
-body {
-  font-family: 'Vazirmatn', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  direction: rtl;
-  overflow-x: hidden;
+body{
+  font-family:'Vazirmatn',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  direction:rtl;
+  overflow-x:hidden;
 }
 
-/* ── BACKGROUND EFFECTS ── */
-.bg-orb {
-  position: fixed;
-  border-radius: 50%;
-  filter: blur(120px);
-  pointer-events: none;
-  z-index: 0;
+/* ── CUSTOM CURSOR ── */
+#cursor{
+  position:fixed;width:10px;height:10px;
+  background:var(--a1);border-radius:50%;
+  pointer-events:none;z-index:9999;
+  transform:translate(-50%,-50%);
+  transition:width .2s,height .2s,background .2s;
+  mix-blend-mode:screen;
 }
-.bg-orb-1 {
-  width: 600px; height: 600px;
-  background: radial-gradient(circle, rgba(124,106,247,0.12) 0%, transparent 70%);
-  top: -200px; right: -100px;
-  animation: orbFloat 12s ease-in-out infinite;
+#cursor-ring{
+  position:fixed;width:36px;height:36px;
+  border:1.5px solid rgba(99,179,237,0.4);
+  border-radius:50%;pointer-events:none;z-index:9998;
+  transform:translate(-50%,-50%);
+  transition:transform .12s ease,width .3s,height .3s,border-color .3s;
 }
-.bg-orb-2 {
-  width: 500px; height: 500px;
-  background: radial-gradient(circle, rgba(192,132,252,0.08) 0%, transparent 70%);
-  bottom: 100px; left: -150px;
-  animation: orbFloat 16s ease-in-out infinite reverse;
-}
-.bg-grid {
-  position: fixed; inset: 0;
-  background-image:
-    linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
-  background-size: 60px 60px;
-  pointer-events: none;
-  z-index: 0;
+body:has(button:hover) #cursor{width:18px;height:18px;background:var(--a3);}
+body:has(button:hover) #cursor-ring{width:52px;height:52px;border-color:var(--a3);}
+body:has(input:focus) #cursor-ring{border-color:var(--a2);}
+
+/* ── CANVAS STARS ── */
+#stars-canvas{
+  position:fixed;inset:0;z-index:0;
+  pointer-events:none;
 }
 
-@keyframes orbFloat {
-  0%, 100% { transform: translateY(0) scale(1); }
-  50% { transform: translateY(-40px) scale(1.05); }
+/* ── NEBULA ORBS ── */
+.orb{
+  position:fixed;border-radius:50%;
+  filter:blur(100px);pointer-events:none;z-index:0;
+}
+.orb1{
+  width:700px;height:700px;
+  background:radial-gradient(circle,rgba(99,179,237,0.07) 0%,transparent 65%);
+  top:-200px;right:-200px;
+  animation:drift1 20s ease-in-out infinite;
+}
+.orb2{
+  width:600px;height:600px;
+  background:radial-gradient(circle,rgba(159,122,234,0.06) 0%,transparent 65%);
+  bottom:-100px;left:-200px;
+  animation:drift2 25s ease-in-out infinite;
+}
+.orb3{
+  width:400px;height:400px;
+  background:radial-gradient(circle,rgba(246,173,85,0.05) 0%,transparent 65%);
+  top:50%;left:50%;transform:translate(-50%,-50%);
+  animation:drift3 30s ease-in-out infinite;
+}
+@keyframes drift1{0%,100%{transform:translate(0,0) scale(1);}33%{transform:translate(-60px,40px) scale(1.1);}66%{transform:translate(40px,-30px) scale(0.95);}}
+@keyframes drift2{0%,100%{transform:translate(0,0) scale(1);}33%{transform:translate(50px,-50px) scale(1.05);}66%{transform:translate(-30px,40px) scale(0.9);}}
+@keyframes drift3{0%,100%{transform:translate(-50%,-50%) scale(1) rotate(0deg);}50%{transform:translate(-50%,-50%) scale(1.2) rotate(180deg);}}
+
+/* ── SCAN LINE ── */
+body::after{
+  content:'';position:fixed;inset:0;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(255,255,255,0.008) 2px,rgba(255,255,255,0.008) 4px);
+  pointer-events:none;z-index:0;
 }
 
 /* ── LAYOUT ── */
-.page {
-  position: relative;
-  z-index: 1;
-  max-width: 780px;
-  margin: 0 auto;
-  padding: 80px 24px 100px;
+.wrap{
+  position:relative;z-index:2;
+  isolation:isolate;
+  max-width:800px;margin:0 auto;
+  padding:80px 24px 120px;
 }
 
-/* ── HEADER ── */
-.header {
-  text-align: center;
-  margin-bottom: 72px;
+/* ── HERO HEADER ── */
+.hero{
+  text-align:center;margin-bottom:80px;
+  position:relative;
 }
 
-.header-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: linear-gradient(135deg, rgba(124,106,247,0.15), rgba(192,132,252,0.1));
-  border: 1px solid rgba(124,106,247,0.3);
-  border-radius: 100px;
-  padding: 6px 18px;
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--accent2);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  margin-bottom: 28px;
-  animation: badgePulse 3s ease-in-out infinite;
+.hero-tag{
+  display:inline-flex;align-items:center;gap:10px;
+  background:linear-gradient(135deg,rgba(99,179,237,0.1),rgba(159,122,234,0.08));
+  border:1px solid rgba(99,179,237,0.2);
+  border-radius:100px;padding:8px 22px;
+  font-size:11px;font-weight:700;
+  color:var(--a1);letter-spacing:.15em;
+  text-transform:uppercase;
+  margin-bottom:32px;
+  animation:fadeSlide .8s ease both;
+}
+.hero-tag .dot{
+  width:7px;height:7px;background:var(--a4);
+  border-radius:50%;box-shadow:0 0 10px var(--a4);
+  animation:pulse 2s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.4);opacity:.6;}}
+
+.hero h1{
+  font-size:clamp(36px,6vw,64px);
+  font-weight:900;
+  line-height:1.05;
+  letter-spacing:-.03em;
+  margin-bottom:24px;
+  animation:fadeSlide .8s .1s ease both;
+}
+.hero h1 em{
+  display:block;font-style:normal;
+  background:linear-gradient(135deg,var(--a1) 0%,var(--a2) 50%,var(--a3) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  background-size:300% 300%;
+  animation:fadeSlide .8s .1s ease both, chromaShift 6s ease-in-out infinite;
+}
+@keyframes chromaShift{
+  0%,100%{background-position:0% 50%;}
+  50%{background-position:100% 50%;}
 }
 
-.header-badge::before {
-  content: '';
-  width: 6px; height: 6px;
-  background: var(--success);
-  border-radius: 50%;
-  box-shadow: 0 0 8px var(--success);
-  animation: blink 2s ease-in-out infinite;
+.hero p{
+  font-size:15px;color:var(--muted);line-height:1.9;
+  max-width:460px;margin:0 auto 40px;
+  animation:fadeSlide .8s .2s ease both;
 }
 
-@keyframes badgePulse {
-  0%,100% { box-shadow: 0 0 0 0 rgba(124,106,247,0); }
-  50% { box-shadow: 0 0 20px rgba(124,106,247,0.15); }
+.hero-stats{
+  display:flex;justify-content:center;gap:40px;
+  animation:fadeSlide .8s .3s ease both;
 }
-@keyframes blink {
-  0%,100% { opacity:1; }
-  50% { opacity:0.3; }
+.stat{text-align:center;}
+.stat-num{
+  font-size:24px;font-weight:900;
+  background:linear-gradient(135deg,var(--a1),var(--a2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
 }
+.stat-lbl{font-size:11px;color:var(--dim);font-weight:600;letter-spacing:.08em;margin-top:2px;}
 
-.header h1 {
-  font-size: 52px;
-  font-weight: 900;
-  line-height: 1.1;
-  margin-bottom: 18px;
-  letter-spacing: -0.02em;
+/* ── STEPS NAV ── */
+.steps-nav{
+  display:flex;align-items:center;
+  gap:0;margin-bottom:48px;
+  background:var(--s1);
+  border:1px solid var(--border);
+  border-radius:100px;
+  padding:6px;
+  animation:fadeSlide .8s .4s ease both;
+  overflow-x:auto;
+  scrollbar-width:none;
 }
+.steps-nav::-webkit-scrollbar{display:none;}
 
-.header h1 .line1 {
-  display: block;
-  color: var(--text);
+.step-btn{
+  display:flex;align-items:center;gap:8px;
+  padding:10px 18px;border-radius:100px;
+  border:none;background:transparent;
+  font-family:'Vazirmatn',sans-serif;
+  font-size:12px;font-weight:600;
+  color:var(--dim);cursor:pointer;
+  transition:all .3s ease;white-space:nowrap;
 }
-
-.header h1 .line2 {
-  display: block;
-  background: linear-gradient(135deg, var(--accent), var(--accent2), var(--gold));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  background-size: 200% 200%;
-  animation: gradientShift 4s ease-in-out infinite;
+.step-btn .snum{
+  width:22px;height:22px;
+  border-radius:50%;border:1.5px solid var(--dim);
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;font-weight:700;
+  transition:all .3s;
 }
-
-@keyframes gradientShift {
-  0%,100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
+.step-btn.active{
+  background:linear-gradient(135deg,rgba(99,179,237,0.15),rgba(159,122,234,0.1));
+  color:var(--a1);
 }
-
-.header-sub {
-  font-size: 15px;
-  color: var(--text-muted);
-  line-height: 1.8;
-  max-width: 440px;
-  margin: 0 auto 32px;
+.step-btn.active .snum{
+  background:linear-gradient(135deg,var(--a1),var(--a2));
+  border-color:transparent;color:#fff;
+  box-shadow:0 0 12px var(--glow1);
 }
-
-.header-divider {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  margin-top: 32px;
+.step-btn.done .snum{
+  background:var(--a4);border-color:transparent;color:#fff;
 }
-
-.header-divider-line {
-  width: 80px; height: 1px;
-  background: linear-gradient(to left, transparent, var(--accent));
-  opacity: 0.4;
-}
-.header-divider-line:last-child {
-  background: linear-gradient(to right, transparent, var(--accent));
-}
-
-.header-divider-icon {
-  font-size: 18px;
-  opacity: 0.6;
-}
-
-/* ── PROGRESS BAR ── */
-.progress-wrap {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 100px;
-  padding: 16px 24px;
-  margin-bottom: 48px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.progress-bar-bg {
-  flex: 1;
-  height: 4px;
-  background: var(--border);
-  border-radius: 100px;
-  overflow: hidden;
-}
-
-.progress-bar-fill {
-  height: 100%;
-  width: 0%;
-  background: linear-gradient(90deg, var(--accent), var(--accent2));
-  border-radius: 100px;
-  transition: width 0.4s ease;
-  box-shadow: 0 0 12px var(--accent-glow);
-}
-
-.progress-label {
-  font-size: 12px;
-  color: var(--text-muted);
-  white-space: nowrap;
-  font-weight: 600;
-}
-
-.progress-pct {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--accent2);
-  min-width: 36px;
-  text-align: left;
-}
+.step-btn.done{color:var(--a4);}
 
 /* ── SECTION CARD ── */
-.card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  padding: 32px;
-  margin-bottom: 16px;
-  transition: border-color 0.3s, box-shadow 0.3s;
-  position: relative;
-  overflow: hidden;
-  animation: cardIn 0.6s ease both;
+.card{
+  background:var(--s1);
+  border:1px solid var(--border);
+  border-radius:24px;
+  padding:36px;
+  margin-bottom:12px;
+  position:relative;overflow:hidden;
+  transition:border-color .4s,box-shadow .4s;
+  animation:cardRise .7s ease both;
+}
+.card:nth-child(1){animation-delay:.05s}
+.card:nth-child(2){animation-delay:.1s}
+.card:nth-child(3){animation-delay:.15s}
+.card:nth-child(4){animation-delay:.2s}
+.card:nth-child(5){animation-delay:.25s}
+.card:nth-child(6){animation-delay:.3s}
+
+@keyframes cardRise{
+  from{opacity:0;transform:translateY(30px);}
+  to{opacity:1;transform:translateY(0);}
 }
 
-.card::before {
-  content: '';
-  position: absolute;
-  top: 0; right: 0;
-  width: 200px; height: 1px;
-  background: linear-gradient(to left, transparent, var(--accent));
-  opacity: 0;
-  transition: opacity 0.3s;
+/* top glow line */
+.card::before{
+  content:'';position:absolute;
+  top:0;left:10%;right:10%;height:1px;
+  background:linear-gradient(90deg,transparent,var(--a1),transparent);
+  opacity:0;transition:opacity .4s;
+  pointer-events:none;
 }
-
-.card:hover {
-  border-color: var(--border-hover);
-  box-shadow: 0 8px 40px rgba(0,0,0,0.3);
+.card:hover{
+  border-color:rgba(99,179,237,0.15);
+  box-shadow:0 20px 60px rgba(0,0,0,.5),0 0 0 1px rgba(99,179,237,.05);
 }
+.card:hover::before{opacity:1;}
 
-.card:hover::before { opacity: 1; }
-
-.card:nth-child(1) { animation-delay: 0.05s; }
-.card:nth-child(2) { animation-delay: 0.1s; }
-.card:nth-child(3) { animation-delay: 0.15s; }
-.card:nth-child(4) { animation-delay: 0.2s; }
-.card:nth-child(5) { animation-delay: 0.25s; }
-.card:nth-child(6) { animation-delay: 0.3s; }
-
-@keyframes cardIn {
-  from { opacity: 0; transform: translateY(24px); }
-  to { opacity: 1; transform: translateY(0); }
+/* inner shimmer */
+.card::after{
+  content:'';position:absolute;
+  top:-100%;left:-100%;width:60%;height:300%;
+  background:linear-gradient(115deg,transparent 0%,rgba(255,255,255,.02) 50%,transparent 100%);
+  transition:transform .6s ease;
+  pointer-events:none;
 }
+.card:hover::after{transform:translate(250%,0);}
 
 /* ── CARD HEADER ── */
-.card-header {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  margin-bottom: 28px;
+.ch{
+  display:flex;align-items:center;gap:16px;
+  margin-bottom:32px;padding-bottom:20px;
+  border-bottom:1px solid var(--border);
 }
-
-.card-icon {
-  width: 40px; height: 40px;
-  background: linear-gradient(135deg, rgba(124,106,247,0.2), rgba(192,132,252,0.1));
-  border: 1px solid rgba(124,106,247,0.3);
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  flex-shrink: 0;
+.ch-icon{
+  width:44px;height:44px;
+  border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;position:relative;flex-shrink:0;
 }
-
-.card-title {
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--text);
-  letter-spacing: -0.01em;
+.ch-icon-bg{
+  position:absolute;inset:0;border-radius:12px;
+  opacity:.15;
 }
+.card:nth-child(1) .ch-icon-bg{background:var(--a1);}
+.card:nth-child(2) .ch-icon-bg{background:var(--a2);}
+.card:nth-child(3) .ch-icon-bg{background:var(--a3);}
+.card:nth-child(4) .ch-icon-bg{background:var(--a4);}
+.card:nth-child(5) .ch-icon-bg{background:var(--a1);}
+.card:nth-child(6) .ch-icon-bg{background:var(--a2);}
 
-.card-subtitle {
-  font-size: 11px;
-  color: var(--text-dim);
-  font-weight: 500;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  margin-right: auto;
+.ch-info{flex:1;}
+.ch-title{font-size:17px;font-weight:800;letter-spacing:-.01em;}
+.ch-sub{font-size:11px;color:var(--dim);font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin-top:2px;}
+.ch-num{
+  font-size:42px;font-weight:900;
+  color:var(--border);letter-spacing:-.04em;
+  line-height:1;user-select:none;
 }
 
 /* ── FIELDS ── */
-.fields { display: grid; gap: 20px; }
-.fields.two { grid-template-columns: 1fr 1fr; }
-
-@media(max-width:580px) {
-  .fields.two { grid-template-columns: 1fr; }
-  .header h1 { font-size: 34px; }
-  .card { padding: 20px; }
+.grid{display:grid;gap:20px;}
+.grid2{grid-template-columns:1fr 1fr;}
+@media(max-width:580px){
+  .grid2{grid-template-columns:1fr;}
+  .hero h1{font-size:32px;}
+  .card{padding:20px;}
+  .hero-stats{gap:20px;}
 }
 
-.field { display: flex; flex-direction: column; gap: 8px; }
+.f{display:flex;flex-direction:column;gap:9px;}
 
-.field-label {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-muted);
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  display: flex;
-  align-items: center;
-  gap: 6px;
+.f-label{
+  font-size:11px;font-weight:700;
+  color:var(--muted);
+  letter-spacing:.08em;text-transform:uppercase;
+  display:flex;align-items:center;gap:8px;
+}
+.f-label .req{
+  background:linear-gradient(135deg,var(--a1),var(--a2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;font-size:16px;line-height:1;
 }
 
-.field-label .req {
-  color: var(--accent2);
-  font-size: 14px;
-  line-height: 1;
+.f input[type=date]::-webkit-calendar-picker-indicator{
+  filter:invert(1) brightness(1.5);
+  cursor:pointer;
+  opacity:0.7;
+  transition:opacity .2s;
+}
+.f input[type=date]::-webkit-calendar-picker-indicator:hover{
+  opacity:1;
+}
+.f input[type=text],
+.f input[type=date],
+.f textarea{
+  font-family:'Vazirmatn',sans-serif;
+  font-size:14px;
+  background:var(--s2);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:14px 18px;
+  color:var(--text);
+  outline:none;
+  transition:all .3s ease;
+  width:100%;direction:rtl;
+  caret-color:var(--a1);
+}
+.f input::placeholder,.f textarea::placeholder{color:var(--dim);}
+.f input:hover,.f textarea:hover{border-color:rgba(99,179,237,.15);}
+.f input:focus,.f textarea:focus{
+  border-color:rgba(99,179,237,.5);
+  background:rgba(99,179,237,.04);
+  box-shadow:0 0 0 4px rgba(99,179,237,.08),0 4px 20px rgba(0,0,0,.3);
+  transform:translateY(-1px);
+}
+.f textarea{resize:vertical;min-height:100px;line-height:1.7;}
+
+/* phone ltr */
+.ltr-input{direction:ltr !important;text-align:right;}
+
+/* ── PILLS ── */
+.pills{display:flex;flex-wrap:wrap;gap:8px;}
+.pills-col{flex-direction:column;}
+
+.pl{
+  position:relative;
+  display:flex;align-items:center;gap:9px;
+  padding:10px 18px;
+  background:var(--s2);
+  border:1px solid var(--border);
+  border-radius:100px;
+  cursor:pointer;
+  font-size:13px;font-family:'Vazirmatn',sans-serif;
+  color:var(--muted);
+  transition:all .25s ease;
+  user-select:none;overflow:hidden;
+  cursor:pointer;
+}
+.pl::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(99,179,237,.08),rgba(159,122,234,.06));
+  opacity:0;transition:opacity .25s;
+  pointer-events:none;
+}
+.pl:hover{border-color:rgba(99,179,237,.25);color:var(--text);transform:translateY(-1px);}
+.pl:hover::before{opacity:1;}
+.pl input[type=radio]{display:none;}
+.pl-dot{
+  width:9px;height:9px;border-radius:50%;
+  border:2px solid var(--dim);
+  transition:all .25s;flex-shrink:0;position:relative;z-index:1;
+}
+.pl span{position:relative;z-index:1;}
+.pl:has(input:checked){
+  border-color:var(--a1);
+  color:var(--text);
+  background:linear-gradient(135deg,rgba(99,179,237,.12),rgba(159,122,234,.08));
+  box-shadow:0 0 20px rgba(99,179,237,.15),0 4px 12px rgba(0,0,0,.2);
+  transform:translateY(-1px);
+}
+.pl:has(input:checked) .pl-dot{
+  background:var(--a1);border-color:var(--a1);
+  box-shadow:0 0 10px rgba(99,179,237,.6);
 }
 
-.field input[type="text"],
-.field input[type="date"],
-.field textarea {
-  font-family: 'Vazirmatn', sans-serif;
-  font-size: 14px;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 13px 16px;
-  color: var(--text);
-  outline: none;
-  transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
-  width: 100%;
-  direction: rtl;
-  caret-color: var(--accent);
+/* other pill */
+.pl-other{
+  display:flex;align-items:center;gap:9px;
+  padding:10px 18px;
+  background:var(--s2);
+  border:1px solid var(--border);
+  border-radius:100px;
+  flex:1;min-width:170px;
+  transition:all .25s;
+  cursor:pointer;
+}
+.pl-other:has(input[type=radio]:checked){
+  border-color:var(--a1);
+  background:rgba(99,179,237,.08);
+}
+.pl-other input[type=radio]{display:none;}
+.pl-other-lbl{
+  display:flex;align-items:center;gap:9px;
+  font-size:13px;color:var(--muted);
+  cursor:pointer;white-space:nowrap;
+}
+.pl-other-dot{
+  width:9px;height:9px;border-radius:50%;
+  border:2px solid var(--dim);transition:all .25s;flex-shrink:0;
+}
+.pl-other:has(input[type=radio]:checked) .pl-other-dot{
+  background:var(--a1);border-color:var(--a1);
+  box-shadow:0 0 10px rgba(99,179,237,.5);
+}
+.pl-other input[type=text]{
+  background:transparent !important;border:none !important;
+  box-shadow:none !important;padding:0 !important;
+  font-size:13px;flex:1;color:var(--text);
+  outline:none;direction:rtl;transform:none !important;
 }
 
-.field input::placeholder,
-.field textarea::placeholder { color: var(--text-dim); }
-
-.field input:focus,
-.field textarea:focus {
-  border-color: rgba(124,106,247,0.6);
-  background: rgba(124,106,247,0.05);
-  box-shadow: 0 0 0 3px rgba(124,106,247,0.1);
+/* ── PROGRESS ── */
+.prog-wrap{
+  background:var(--s1);border:1px solid var(--border);
+  border-radius:16px;padding:20px 24px;
+  margin-bottom:40px;
+  display:flex;align-items:center;gap:16px;
+  animation:fadeSlide .8s .5s ease both;
 }
-
-.field textarea { resize: vertical; min-height: 100px; line-height: 1.7; }
-
-/* ── OPTION PILLS ── */
-.pills { display: flex; flex-wrap: wrap; gap: 8px; }
-.pills.col { flex-direction: column; }
-
-.pill {
-  display: flex; align-items: center; gap: 8px;
-  padding: 9px 16px;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 100px;
-  cursor: pointer;
-  font-size: 13px;
-  font-family: 'Vazirmatn', sans-serif;
-  color: var(--text-muted);
-  transition: all 0.2s ease;
-  user-select: none;
-  white-space: nowrap;
+.prog-lbl{font-size:12px;color:var(--muted);font-weight:600;white-space:nowrap;}
+.prog-track{
+  flex:1;height:6px;
+  background:var(--s3);border-radius:100px;overflow:hidden;
 }
-
-.pill:hover {
-  border-color: rgba(124,106,247,0.4);
-  color: var(--text);
-  background: rgba(124,106,247,0.06);
+.prog-fill{
+  height:100%;width:0%;border-radius:100px;
+  background:linear-gradient(90deg,var(--a1),var(--a2),var(--a3));
+  background-size:200% 100%;
+  transition:width .5s cubic-bezier(.34,1.56,.64,1);
+  animation:shimmerBar 3s ease-in-out infinite;
+  box-shadow:0 0 16px var(--glow1);
 }
-
-.pill input[type="radio"] { display: none; }
-
-.pill-dot {
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  border: 2px solid var(--text-dim);
-  transition: all 0.2s;
-  flex-shrink: 0;
+@keyframes shimmerBar{
+  0%,100%{background-position:0% 50%;}
+  50%{background-position:100% 50%;}
 }
-
-.pill:has(input:checked) {
-  border-color: var(--accent);
-  background: rgba(124,106,247,0.12);
-  color: var(--text);
-  box-shadow: 0 0 16px rgba(124,106,247,0.15);
-}
-
-.pill:has(input:checked) .pill-dot {
-  background: var(--accent);
-  border-color: var(--accent);
-  box-shadow: 0 0 8px var(--accent-glow);
-}
-
-.pill-other {
-  display: flex; align-items: center; gap: 8px;
-  padding: 9px 16px;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 100px;
-  flex: 1; min-width: 160px;
-  transition: all 0.2s;
-}
-
-.pill-other:has(input[type="radio"]:checked) {
-  border-color: var(--accent);
-  background: rgba(124,106,247,0.12);
-}
-
-.pill-other input[type="radio"] { display: none; }
-
-.pill-other-label {
-  font-size: 13px;
-  color: var(--text-muted);
-  white-space: nowrap;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.pill-other-dot {
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  border: 2px solid var(--text-dim);
-  flex-shrink: 0;
-  transition: all 0.2s;
-}
-
-.pill-other:has(input[type="radio"]:checked) .pill-other-dot {
-  background: var(--accent);
-  border-color: var(--accent);
-}
-
-.pill-other input[type="text"] {
-  background: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
-  padding: 0 !important;
-  font-size: 13px;
-  flex: 1;
-  color: var(--text);
-  outline: none;
-  direction: rtl;
+.prog-pct{
+  font-size:14px;font-weight:800;min-width:40px;text-align:left;
+  background:linear-gradient(135deg,var(--a1),var(--a2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
 }
 
 /* ── SUBMIT ── */
-.submit-section {
-  margin-top: 40px;
-  text-align: center;
+.submit-area{margin-top:48px;text-align:center;}
+.submit-hint{font-size:13px;color:var(--dim);margin-bottom:28px;line-height:1.8;}
+.submit-hint span{color:var(--muted);}
+
+.btn{
+  position:relative;
+  font-family:'Vazirmatn',sans-serif;
+  font-size:17px;font-weight:800;
+  color:#fff;border:none;
+  border-radius:100px;
+  padding:20px 72px;
+  cursor:pointer;
+  letter-spacing:.01em;
+  background:linear-gradient(135deg,var(--a1),var(--a2),var(--a3));
+  background-size:300% 300%;
+  animation:chromaShift 6s ease-in-out infinite;
+  transition:transform .3s,box-shadow .3s,opacity .3s;
+  overflow:hidden;
 }
-
-.submit-note {
-  font-size: 13px;
-  color: var(--text-dim);
-  margin-bottom: 24px;
-  line-height: 1.8;
+.btn::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,.2),transparent);
+  opacity:0;transition:opacity .3s;
+  pointer-events:none;
 }
-
-.submit-note span {
-  color: var(--text-muted);
+.btn:hover{
+  transform:translateY(-4px) scale(1.02);
+  box-shadow:0 20px 60px rgba(99,179,237,.35),0 8px 20px rgba(159,122,234,.2);
 }
+.btn:hover::before{opacity:1;}
+.btn:active{transform:translateY(-1px) scale(.99);}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none;}
 
-.btn-submit {
-  position: relative;
-  font-family: 'Vazirmatn', sans-serif;
-  font-size: 16px;
-  font-weight: 700;
-  color: white;
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
-  border: none;
-  border-radius: 100px;
-  padding: 18px 64px;
-  cursor: pointer;
-  letter-spacing: 0.02em;
-  transition: all 0.3s ease;
-  overflow: hidden;
+/* ripple */
+.btn .ripple{
+  position:absolute;border-radius:50%;
+  background:rgba(255,255,255,.3);
+  transform:scale(0);animation:rippleAnim .6s ease-out forwards;
+  pointer-events:none;
 }
+@keyframes rippleAnim{to{transform:scale(4);opacity:0;}}
 
-.btn-submit::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
-  opacity: 0;
-  transition: opacity 0.3s;
+.spinner{
+  display:inline-block;width:18px;height:18px;
+  border:2px solid rgba(255,255,255,.3);border-top-color:#fff;
+  border-radius:50%;animation:spin .7s linear infinite;
+  vertical-align:middle;margin-left:10px;
 }
+@keyframes spin{to{transform:rotate(360deg);}}
 
-.btn-submit:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 16px 48px rgba(124,106,247,0.4);
-}
-
-.btn-submit:hover::before { opacity: 1; }
-.btn-submit:active { transform: translateY(-1px); }
-
-.btn-submit:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
-}
-
-.spinner {
-  display: inline-block;
-  width: 16px; height: 16px;
-  border: 2px solid rgba(255,255,255,0.3);
-  border-top-color: white;
-  border-radius: 50%;
-  animation: spin 0.7s linear infinite;
-  vertical-align: middle;
-  margin-left: 8px;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-
-.error-box {
-  display: none;
-  background: rgba(248,113,113,0.08);
-  border: 1px solid rgba(248,113,113,0.3);
-  border-radius: 12px;
-  padding: 14px 18px;
-  font-size: 13px;
-  color: var(--error);
-  margin-bottom: 20px;
-  text-align: right;
+/* ── ERROR ── */
+.err{
+  display:none;
+  background:rgba(252,129,129,.07);
+  border:1px solid rgba(252,129,129,.25);
+  border-radius:12px;padding:14px 18px;
+  font-size:13px;color:#fc8181;
+  margin-bottom:20px;
 }
 
 /* ── SUCCESS ── */
-.success-screen {
-  display: none;
-  text-align: center;
-  padding: 80px 24px;
-  animation: cardIn 0.6s ease;
+.success{
+  display:none;text-align:center;
+  padding:100px 24px;
+  animation:fadeSlide .8s ease;
+}
+.success-orb{
+  width:120px;height:120px;border-radius:50%;
+  background:linear-gradient(135deg,rgba(104,211,145,.12),rgba(104,211,145,.04));
+  border:1.5px solid rgba(104,211,145,.3);
+  display:flex;align-items:center;justify-content:center;
+  font-size:48px;margin:0 auto 32px;
+  box-shadow:0 0 60px rgba(104,211,145,.15),0 0 120px rgba(104,211,145,.06);
+  animation:successOrb 2s ease-in-out infinite;
+}
+@keyframes successOrb{
+  0%,100%{box-shadow:0 0 60px rgba(104,211,145,.15),0 0 120px rgba(104,211,145,.06);}
+  50%{box-shadow:0 0 80px rgba(104,211,145,.25),0 0 160px rgba(104,211,145,.12);}
+}
+.success h2{
+  font-size:36px;font-weight:900;margin-bottom:16px;
+  background:linear-gradient(135deg,var(--a4),#9ae6b4);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.success p{color:var(--muted);font-size:15px;line-height:1.9;max-width:400px;margin:0 auto;}
+
+/* ── UTILS ── */
+@keyframes fadeSlide{
+  from{opacity:0;transform:translateY(20px);}
+  to{opacity:1;transform:translateY(0);}
 }
 
-.success-ring {
-  width: 100px; height: 100px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, rgba(52,211,153,0.1), rgba(52,211,153,0.05));
-  border: 2px solid rgba(52,211,153,0.3);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 40px;
-  margin: 0 auto 28px;
-  box-shadow: 0 0 40px rgba(52,211,153,0.15);
-  animation: successPulse 2s ease-in-out infinite;
+.footer{
+  text-align:center;margin-top:80px;
+  font-size:12px;color:var(--dim);letter-spacing:.06em;
 }
-
-@keyframes successPulse {
-  0%,100% { box-shadow: 0 0 40px rgba(52,211,153,0.15); }
-  50% { box-shadow: 0 0 60px rgba(52,211,153,0.3); }
-}
-
-.success-screen h2 {
-  font-size: 32px;
-  font-weight: 900;
-  margin-bottom: 14px;
-  background: linear-gradient(135deg, var(--success), #6ee7b7);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.success-screen p {
-  color: var(--text-muted);
-  font-size: 15px;
-  line-height: 1.8;
-  max-width: 380px;
-  margin: 0 auto;
-}
-
-/* ── FOOTER ── */
-.footer {
-  text-align: center;
-  margin-top: 64px;
-  font-size: 12px;
-  color: var(--text-dim);
-  letter-spacing: 0.06em;
-}
-
-.footer a {
-  color: var(--accent);
-  text-decoration: none;
-  opacity: 0.7;
-  transition: opacity 0.2s;
-}
-.footer a:hover { opacity: 1; }
 </style>
 </head>
 <body>
 
-<div class="bg-orb bg-orb-1"></div>
-<div class="bg-orb bg-orb-2"></div>
-<div class="bg-grid"></div>
+<!-- Cursor -->
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
 
-<div class="page">
+<!-- Background -->
+<canvas id="stars-canvas"></canvas>
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="orb orb3"></div>
 
-  <!-- HEADER -->
-  <header class="header">
-    <div class="header-badge">سرویس فعال · خدمات پژوهشی</div>
+<div class="wrap">
+
+  <!-- HERO -->
+  <header class="hero" id="heroHeader">
+    <div class="hero-tag"><div class="dot"></div>خدمات پژوهشی آکادمیک</div>
     <h1>
-      <span class="line1">سفارش آنلاین</span>
-      <span class="line2">پروپوزل حرفه‌ای</span>
+      پروپوزل شما را<br>
+      <em>ما می‌نویسیم</em>
     </h1>
-    <p class="header-sub">فرم را تکمیل کنید تا پروپوزل دقیقاً متناسب با نیاز شما تهیه شود. اطلاعات شما محرمانه است.</p>
-    <div class="header-divider">
-      <div class="header-divider-line"></div>
-      <div class="header-divider-icon">✦</div>
-      <div class="header-divider-line"></div>
+    <p>فرم زیر را تکمیل کنید. تمام اطلاعات محرمانه و ایمن نگهداری می‌شود و پس از ارسال با شما تماس می‌گیریم.</p>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-num">+۵۰۰</div><div class="stat-lbl">پروپوزل موفق</div></div>
+      <div class="stat"><div class="stat-num">۲۴ ساعت</div><div class="stat-lbl">پاسخ سریع</div></div>
+      <div class="stat"><div class="stat-num">۱۰۰٪</div><div class="stat-lbl">رضایت مشتری</div></div>
     </div>
   </header>
 
   <!-- PROGRESS -->
-  <div class="progress-wrap">
-    <span class="progress-label">تکمیل فرم</span>
-    <div class="progress-bar-bg">
-      <div class="progress-bar-fill" id="progressFill"></div>
-    </div>
-    <span class="progress-pct" id="progressPct">0%</span>
+  <div class="prog-wrap" id="progWrap">
+    <span class="prog-lbl">تکمیل فرم</span>
+    <div class="prog-track"><div class="prog-fill" id="pFill"></div></div>
+    <span class="prog-pct" id="pPct">۰٪</span>
   </div>
 
-  <!-- SUCCESS SCREEN -->
-  <div class="success-screen" id="successScreen">
-    <div class="success-ring">✓</div>
+  <!-- SUCCESS -->
+  <div class="success" id="successScreen">
+    <div class="success-orb">✓</div>
     <h2>سفارش ثبت شد!</h2>
-    <p>اطلاعات شما با موفقیت به تلگرام ارسال شد.<br>به زودی با شما تماس خواهیم گرفت.</p>
+    <p>اطلاعات شما با موفقیت به تلگرام ارسال شد.<br>تیم ما به زودی با شما تماس خواهد گرفت.</p>
   </div>
 
+  <!-- FORM -->
   <form id="mainForm" novalidate>
 
-    <!-- کارت ۱ -->
+    <!-- کارت ۱: اطلاعات عمومی -->
     <div class="card">
-      <div class="card-header">
-        <div class="card-icon">👤</div>
-        <div class="card-title">اطلاعات عمومی</div>
-        <div class="card-subtitle">General Info</div>
+      <div class="ch">
+        <div class="ch-icon"><div class="ch-icon-bg"></div>👤</div>
+        <div class="ch-info">
+          <div class="ch-title">اطلاعات عمومی</div>
+          <div class="ch-sub">General Info</div>
+        </div>
+        <div class="ch-num">01</div>
       </div>
-      <div class="fields two">
-        <div class="field">
-          <label class="field-label">نام کامل <span class="req">*</span></label>
+      <div class="grid grid2">
+        <div class="f">
+          <label class="f-label">نام کامل <span class="req">✦</span></label>
           <input type="text" id="fullname" placeholder="نام و نام خانوادگی">
         </div>
-        <div class="field">
-          <label class="field-label">شماره تماس <span class="req">*</span></label>
-          <input type="text" id="phone" placeholder="مثلاً: 0700000000" style="direction:ltr;text-align:right">
+        <div class="f">
+          <label class="f-label">شماره تماس <span class="req">✦</span></label>
+          <input type="text" id="phone" class="ltr-input" placeholder="0700 000 000">
         </div>
       </div>
-      <div class="fields" style="margin-top:20px">
-        <div class="field">
-          <label class="field-label">رشته تحصیلی</label>
-          <input type="text" id="field_study" placeholder="مثلاً: مدیریت، حقوق">
+      <div class="grid" style="margin-top:20px">
+        <div class="f">
+          <label class="f-label">رشته تحصیلی</label>
+          <input type="text" id="field_study" placeholder="مثلاً: مدیریت، حقوق، روانشناسی">
         </div>
-      </div>
-      <div class="fields" style="margin-top:20px">
-        <div class="field">
-          <label class="field-label">مقطع تحصیلی</label>
+        <div class="f">
+          <label class="f-label">مقطع تحصیلی</label>
           <div class="pills">
-            <label class="pill"><input type="radio" name="level" value="لیسانس"><div class="pill-dot"></div>لیسانس</label>
-            <label class="pill"><input type="radio" name="level" value="ماستری"><div class="pill-dot"></div>ماستری</label>
-            <label class="pill"><input type="radio" name="level" value="دکترا"><div class="pill-dot"></div>دکترا</label>
-            <label class="pill"><input type="radio" name="level" value="غیردانشگاهی"><div class="pill-dot"></div>غیر دانشگاهی</label>
+            <label class="pl"><input type="radio" name="level" value="لیسانس"><div class="pl-dot"></div><span>لیسانس</span></label>
+            <label class="pl"><input type="radio" name="level" value="ماستری"><div class="pl-dot"></div><span>ماستری</span></label>
+            <label class="pl"><input type="radio" name="level" value="دکترا"><div class="pl-dot"></div><span>دکترا</span></label>
+            <label class="pl"><input type="radio" name="level" value="غیردانشگاهی"><div class="pl-dot"></div><span>غیر دانشگاهی</span></label>
           </div>
         </div>
-        <div class="field" style="margin-top:4px">
-          <label class="field-label">نام دانشگاه / موسسه</label>
+        <div class="f">
+          <label class="f-label">نام دانشگاه / موسسه</label>
           <input type="text" id="university" placeholder="در صورت وجود وارد کنید">
         </div>
       </div>
     </div>
 
-    <!-- کارت ۲ -->
+    <!-- کارت ۲: اطلاعات پروپوزل -->
     <div class="card">
-      <div class="card-header">
-        <div class="card-icon">🎯</div>
-        <div class="card-title">اطلاعات پروپوزل</div>
-        <div class="card-subtitle">Proposal Info</div>
+      <div class="ch">
+        <div class="ch-icon"><div class="ch-icon-bg"></div>🎯</div>
+        <div class="ch-info">
+          <div class="ch-title">اطلاعات پروپوزل</div>
+          <div class="ch-sub">Proposal Info</div>
+        </div>
+        <div class="ch-num">02</div>
       </div>
-      <div class="fields">
-        <div class="field">
-          <label class="field-label">هدف از تهیه</label>
+      <div class="grid">
+        <div class="f">
+          <label class="f-label">هدف از تهیه</label>
           <div class="pills">
-            <label class="pill"><input type="radio" name="purpose" value="پایان‌نامه"><div class="pill-dot"></div>پایان‌نامه</label>
-            <label class="pill"><input type="radio" name="purpose" value="مونوگراف"><div class="pill-dot"></div>مونوگراف</label>
-            <label class="pill"><input type="radio" name="purpose" value="پروژه درسی"><div class="pill-dot"></div>پروژه درسی</label>
-            <label class="pill"><input type="radio" name="purpose" value="پروژه NGO"><div class="pill-dot"></div>پروژه NGO</label>
-            <label class="pill"><input type="radio" name="purpose" value="درخواست بودجه"><div class="pill-dot"></div>درخواست بودجه</label>
-            <div class="pill-other">
-              <label class="pill-other-label">
-                <input type="radio" name="purpose" value="سایر">
-                <div class="pill-other-dot"></div>
-                سایر:
-              </label>
+            <label class="pl"><input type="radio" name="purpose" value="پایان‌نامه"><div class="pl-dot"></div><span>پایان‌نامه</span></label>
+            <label class="pl"><input type="radio" name="purpose" value="مونوگراف"><div class="pl-dot"></div><span>مونوگراف</span></label>
+            <label class="pl"><input type="radio" name="purpose" value="پروژه درسی"><div class="pl-dot"></div><span>پروژه درسی</span></label>
+            <label class="pl"><input type="radio" name="purpose" value="پروژه NGO"><div class="pl-dot"></div><span>NGO</span></label>
+            <label class="pl"><input type="radio" name="purpose" value="درخواست بودجه"><div class="pl-dot"></div><span>درخواست بودجه</span></label>
+            <div class="pl-other">
+              <label class="pl-other-lbl"><input type="radio" name="purpose" value="سایر"><div class="pl-other-dot"></div>سایر:</label>
               <input type="text" id="purpose_other" placeholder="توضیح دهید">
             </div>
           </div>
         </div>
-        <div class="field">
-          <label class="field-label">موضوع دقیق <span class="req">*</span></label>
+        <div class="f">
+          <label class="f-label">موضوع دقیق پروپوزل <span class="req">✦</span></label>
           <textarea id="topic" placeholder="موضوع را کامل و مشخص بنویسید..."></textarea>
         </div>
-        <div class="fields two" style="margin-top:0">
-          <div class="field">
-            <label class="field-label">محل اجرا</label>
+        <div class="grid grid2">
+          <div class="f">
+            <label class="f-label">محل اجرا</label>
             <input type="text" id="location" placeholder="شهر و کشور">
           </div>
-          <div class="field">
-            <label class="field-label">جامعه هدف</label>
+          <div class="f">
+            <label class="f-label">جامعه هدف</label>
             <input type="text" id="target" placeholder="مثلاً: دانشجویان">
           </div>
         </div>
       </div>
     </div>
 
-    <!-- کارت ۳ -->
+    <!-- کارت ۳: جزئیات علمی -->
     <div class="card">
-      <div class="card-header">
-        <div class="card-icon">🔬</div>
-        <div class="card-title">جزئیات علمی</div>
-        <div class="card-subtitle">Scientific Details</div>
+      <div class="ch">
+        <div class="ch-icon"><div class="ch-icon-bg"></div>🔬</div>
+        <div class="ch-info">
+          <div class="ch-title">جزئیات علمی</div>
+          <div class="ch-sub">Scientific Details</div>
+        </div>
+        <div class="ch-num">03</div>
       </div>
-      <div class="fields">
-        <div class="field">
-          <label class="field-label">نوع کار</label>
+      <div class="grid">
+        <div class="f">
+          <label class="f-label">نوع کار</label>
           <div class="pills">
-            <label class="pill"><input type="radio" name="work_type" value="تحقیق نظری"><div class="pill-dot"></div>تحقیق نظری</label>
-            <label class="pill"><input type="radio" name="work_type" value="تحقیق میدانی"><div class="pill-dot"></div>تحقیق میدانی</label>
-            <label class="pill"><input type="radio" name="work_type" value="پروژه عملی"><div class="pill-dot"></div>پروژه عملی</label>
-            <label class="pill"><input type="radio" name="work_type" value="طراحی سیستم"><div class="pill-dot"></div>طراحی سیستم</label>
-            <label class="pill"><input type="radio" name="work_type" value="ترکیبی"><div class="pill-dot"></div>ترکیبی</label>
-            <label class="pill"><input type="radio" name="work_type" value="نمی‌دانم"><div class="pill-dot"></div>مطمئن نیستم</label>
+            <label class="pl"><input type="radio" name="work_type" value="تحقیق نظری"><div class="pl-dot"></div><span>تحقیق نظری</span></label>
+            <label class="pl"><input type="radio" name="work_type" value="تحقیق میدانی"><div class="pl-dot"></div><span>تحقیق میدانی</span></label>
+            <label class="pl"><input type="radio" name="work_type" value="پروژه عملی"><div class="pl-dot"></div><span>پروژه عملی</span></label>
+            <label class="pl"><input type="radio" name="work_type" value="طراحی سیستم"><div class="pl-dot"></div><span>طراحی سیستم</span></label>
+            <label class="pl"><input type="radio" name="work_type" value="ترکیبی"><div class="pl-dot"></div><span>ترکیبی</span></label>
+            <label class="pl"><input type="radio" name="work_type" value="نمی‌دانم"><div class="pl-dot"></div><span>مطمئن نیستم</span></label>
           </div>
         </div>
-        <div class="fields two" style="margin-top:0">
-          <div class="field">
-            <label class="field-label">روش تحقیق پیشنهادی</label>
+        <div class="grid grid2">
+          <div class="f">
+            <label class="f-label">روش تحقیق</label>
             <input type="text" id="method" placeholder="اگر استاد مشخص کرده...">
           </div>
-          <div class="field">
-            <label class="field-label">قالب از استاد؟</label>
+          <div class="f">
+            <label class="f-label">قالب از استاد؟</label>
             <div class="pills">
-              <label class="pill"><input type="radio" name="template" value="بله"><div class="pill-dot"></div>بله</label>
-              <label class="pill"><input type="radio" name="template" value="خیر"><div class="pill-dot"></div>خیر</label>
+              <label class="pl"><input type="radio" name="template" value="بله"><div class="pl-dot"></div><span>بله</span></label>
+              <label class="pl"><input type="radio" name="template" value="خیر"><div class="pl-dot"></div><span>خیر</span></label>
             </div>
           </div>
         </div>
-        <div class="field">
-          <label class="field-label">سبک رفرنس</label>
+        <div class="f">
+          <label class="f-label">سبک رفرنس</label>
           <div class="pills">
-            <label class="pill"><input type="radio" name="reference" value="APA"><div class="pill-dot"></div>APA</label>
-            <label class="pill"><input type="radio" name="reference" value="IEEE"><div class="pill-dot"></div>IEEE</label>
-            <label class="pill"><input type="radio" name="reference" value="Harvard"><div class="pill-dot"></div>Harvard</label>
-            <label class="pill"><input type="radio" name="reference" value="مهم نیست"><div class="pill-dot"></div>مهم نیست</label>
+            <label class="pl"><input type="radio" name="reference" value="APA"><div class="pl-dot"></div><span>APA</span></label>
+            <label class="pl"><input type="radio" name="reference" value="IEEE"><div class="pl-dot"></div><span>IEEE</span></label>
+            <label class="pl"><input type="radio" name="reference" value="Harvard"><div class="pl-dot"></div><span>Harvard</span></label>
+            <label class="pl"><input type="radio" name="reference" value="مهم نیست"><div class="pl-dot"></div><span>مهم نیست</span></label>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- کارت ۴ -->
+    <!-- کارت ۴: مشخصات فایل -->
     <div class="card">
-      <div class="card-header">
-        <div class="card-icon">📄</div>
-        <div class="card-title">مشخصات فایل</div>
-        <div class="card-subtitle">File Specs</div>
+      <div class="ch">
+        <div class="ch-icon"><div class="ch-icon-bg"></div>📄</div>
+        <div class="ch-info">
+          <div class="ch-title">مشخصات فایل</div>
+          <div class="ch-sub">File Specs</div>
+        </div>
+        <div class="ch-num">04</div>
       </div>
-      <div class="fields two">
-        <div class="field">
-          <label class="field-label">زبان نگارش</label>
-          <div class="pills col">
-            <label class="pill"><input type="radio" name="language" value="دری"><div class="pill-dot"></div>دری</label>
-            <label class="pill"><input type="radio" name="language" value="فارسی رسمی"><div class="pill-dot"></div>فارسی رسمی</label>
-            <label class="pill"><input type="radio" name="language" value="انگلیسی"><div class="pill-dot"></div>انگلیسی</label>
-            <div class="pill-other">
-              <label class="pill-other-label"><input type="radio" name="language" value="سایر"><div class="pill-other-dot"></div>سایر:</label>
+      <div class="grid grid2">
+        <div class="f">
+          <label class="f-label">زبان نگارش</label>
+          <div class="pills pills-col">
+            <label class="pl"><input type="radio" name="language" value="دری"><div class="pl-dot"></div><span>دری</span></label>
+            <label class="pl"><input type="radio" name="language" value="فارسی رسمی"><div class="pl-dot"></div><span>فارسی رسمی</span></label>
+            <label class="pl"><input type="radio" name="language" value="انگلیسی"><div class="pl-dot"></div><span>انگلیسی</span></label>
+            <div class="pl-other">
+              <label class="pl-other-lbl"><input type="radio" name="language" value="سایر"><div class="pl-other-dot"></div>سایر:</label>
               <input type="text" id="language_other" placeholder="...">
             </div>
           </div>
         </div>
-        <div class="field">
-          <label class="field-label">حجم تقریبی</label>
-          <div class="pills col">
-            <label class="pill"><input type="radio" name="pages" value="۵ تا ۱۰ صفحه"><div class="pill-dot"></div>۵ تا ۱۰ صفحه</label>
-            <label class="pill"><input type="radio" name="pages" value="۱۰ تا ۱۵ صفحه"><div class="pill-dot"></div>۱۰ تا ۱۵ صفحه</label>
-            <label class="pill"><input type="radio" name="pages" value="بیشتر از ۱۵ صفحه"><div class="pill-dot"></div>بیشتر از ۱۵ صفحه</label>
-            <label class="pill"><input type="radio" name="pages" value="طبق نظر شما"><div class="pill-dot"></div>طبق نظر شما</label>
+        <div class="f">
+          <label class="f-label">حجم تقریبی</label>
+          <div class="pills pills-col">
+            <label class="pl"><input type="radio" name="pages" value="۵ تا ۱۰ صفحه"><div class="pl-dot"></div><span>۵ تا ۱۰ صفحه</span></label>
+            <label class="pl"><input type="radio" name="pages" value="۱۰ تا ۱۵ صفحه"><div class="pl-dot"></div><span>۱۰ تا ۱۵ صفحه</span></label>
+            <label class="pl"><input type="radio" name="pages" value="بیشتر از ۱۵ صفحه"><div class="pl-dot"></div><span>بیشتر از ۱۵ صفحه</span></label>
+            <label class="pl"><input type="radio" name="pages" value="طبق نظر شما"><div class="pl-dot"></div><span>طبق نظر شما</span></label>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- کارت ۵ -->
+    <!-- کارت ۵: زمان‌بندی -->
     <div class="card">
-      <div class="card-header">
-        <div class="card-icon">⏰</div>
-        <div class="card-title">زمان‌بندی</div>
-        <div class="card-subtitle">Timeline</div>
+      <div class="ch">
+        <div class="ch-icon"><div class="ch-icon-bg"></div>⏰</div>
+        <div class="ch-info">
+          <div class="ch-title">زمان‌بندی</div>
+          <div class="ch-sub">Timeline</div>
+        </div>
+        <div class="ch-num">05</div>
       </div>
-      <div class="fields two">
-        <div class="field">
-          <label class="field-label">ددلاین تحویل</label>
+      <div class="grid grid2">
+        <div class="f">
+          <label class="f-label">ددلاین تحویل</label>
           <input type="date" id="deadline">
         </div>
-        <div class="field">
-          <label class="field-label">درجه فوریت</label>
+        <div class="f">
+          <label class="f-label">درجه فوریت</label>
           <div class="pills">
-            <label class="pill"><input type="radio" name="urgency" value="عادی"><div class="pill-dot"></div>عادی</label>
-            <label class="pill"><input type="radio" name="urgency" value="فوری"><div class="pill-dot"></div>فوری</label>
-            <label class="pill"><input type="radio" name="urgency" value="خیلی فوری"><div class="pill-dot"></div>خیلی فوری</label>
+            <label class="pl"><input type="radio" name="urgency" value="عادی"><div class="pl-dot"></div><span>عادی</span></label>
+            <label class="pl"><input type="radio" name="urgency" value="فوری"><div class="pl-dot"></div><span>فوری</span></label>
+            <label class="pl"><input type="radio" name="urgency" value="خیلی فوری"><div class="pl-dot"></div><span>خیلی فوری</span></label>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- کارت ۶ -->
+    <!-- کارت ۶: تکمیلی -->
     <div class="card">
-      <div class="card-header">
-        <div class="card-icon">📎</div>
-        <div class="card-title">موارد تکمیلی</div>
-        <div class="card-subtitle">Additional Info</div>
+      <div class="ch">
+        <div class="ch-icon"><div class="ch-icon-bg"></div>📎</div>
+        <div class="ch-info">
+          <div class="ch-title">موارد تکمیلی</div>
+          <div class="ch-sub">Additional Info</div>
+        </div>
+        <div class="ch-num">06</div>
       </div>
-      <div class="fields">
-        <div class="field">
-          <label class="field-label">قبلاً چیزی نوشته‌اید؟</label>
+      <div class="grid">
+        <div class="f">
+          <label class="f-label">قبلاً چیزی نوشته‌اید؟</label>
           <div class="pills">
-            <label class="pill"><input type="radio" name="existing" value="بله"><div class="pill-dot"></div>بله — ارسال می‌کنم</label>
-            <label class="pill"><input type="radio" name="existing" value="خیر"><div class="pill-dot"></div>خیر</label>
+            <label class="pl"><input type="radio" name="existing" value="بله"><div class="pl-dot"></div><span>بله — ارسال می‌کنم</span></label>
+            <label class="pl"><input type="radio" name="existing" value="خیر"><div class="pl-dot"></div><span>خیر</span></label>
           </div>
         </div>
-        <div class="field">
-          <label class="field-label">توضیحات اضافی</label>
+        <div class="f">
+          <label class="f-label">توضیحات اضافی</label>
           <textarea id="extra" placeholder="فایل‌ها یا توضیحات بیشتر..."></textarea>
         </div>
-        <div class="field">
-          <label class="field-label">نکات خاص</label>
+        <div class="f">
+          <label class="f-label">نکات خاص</label>
           <textarea id="notes" placeholder="نکاتی که باید در نگارش رعایت شود..."></textarea>
         </div>
       </div>
     </div>
 
     <!-- SUBMIT -->
-    <div class="submit-section">
-      <div class="error-box" id="errorBox"></div>
-      <p class="submit-note">
-        با ارسال فرم، اطلاعات شما <span>محرمانه</span> و <span>ایمن</span> نگهداری می‌شود
-      </p>
-      <button type="button" class="btn-submit" id="submitBtn" onclick="submitForm()">
+    <div class="submit-area">
+      <div class="err" id="errBox"></div>
+      <p class="submit-hint">اطلاعات شما <span>ایمن</span> و <span>محرمانه</span> نگهداری می‌شود</p>
+      <button type="button" class="btn" id="submitBtn" onclick="doSubmit(event)">
         ارسال سفارش ✦
       </button>
     </div>
 
   </form>
 
-  <div class="footer">
-    © خدمات پژوهشی آکادمیک &nbsp;·&nbsp; تمامی حقوق محفوظ است
-  </div>
+  <div class="footer">© خدمات پژوهشی آکادمیک &nbsp;·&nbsp; تمامی حقوق محفوظ است</div>
 
 </div>
 
 <script>
-const BOT_TOKEN = '8525733249:AAEXaI_hiFNxRMQQaevUQP9zEUWX9FMTLRo';
-const CHAT_ID   = '492462009';
-
-// ── Progress Bar ──
-function updateProgress() {
-  const fields = [
-    document.getElementById('fullname').value,
-    document.getElementById('topic').value,
-    document.querySelector('input[name="level"]:checked'),
-    document.querySelector('input[name="purpose"]:checked'),
-    document.querySelector('input[name="language"]:checked'),
-    document.querySelector('input[name="pages"]:checked'),
-    document.getElementById('deadline').value,
-    document.querySelector('input[name="urgency"]:checked'),
-  ];
-  const filled = fields.filter(f => f && (typeof f === 'string' ? f.trim() : true)).length;
-  const pct = Math.round((filled / fields.length) * 100);
-  document.getElementById('progressFill').style.width = pct + '%';
-  document.getElementById('progressPct').textContent = pct + '%';
+/* ══ CURSOR ══ */
+const cur = document.getElementById('cursor');
+const ring = document.getElementById('cursor-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{
+  mx=e.clientX; my=e.clientY;
+  cur.style.left=mx+'px'; cur.style.top=my+'px';
+});
+function animRing(){
+  rx+=(mx-rx)*.12; ry+=(my-ry)*.12;
+  ring.style.left=rx+'px'; ring.style.top=ry+'px';
+  requestAnimationFrame(animRing);
 }
+animRing();
 
-document.querySelectorAll('input, textarea').forEach(el => {
-  el.addEventListener('input', updateProgress);
-  el.addEventListener('change', updateProgress);
+/* ══ STARS CANVAS ══ */
+const canvas=document.getElementById('stars-canvas');
+const ctx=canvas.getContext('2d');
+let stars=[];
+function initStars(){
+  canvas.width=innerWidth; canvas.height=innerHeight;
+  stars=Array.from({length:180},()=>({
+    x:Math.random()*canvas.width,
+    y:Math.random()*canvas.height,
+    r:Math.random()*1.2+.2,
+    a:Math.random(),
+    s:Math.random()*.004+.001,
+    d:Math.random()<.5?1:-1
+  }));
+}
+function drawStars(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  stars.forEach(s=>{
+    s.a+=s.s*s.d;
+    if(s.a>1||s.a<0) s.d*=-1;
+    ctx.beginPath();
+    ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+    ctx.fillStyle=`rgba(200,220,255,${s.a*.7})`;
+    ctx.fill();
+  });
+  requestAnimationFrame(drawStars);
+}
+initStars(); drawStars();
+window.addEventListener('resize',initStars);
+
+/* ══ PROGRESS ══ */
+const fields=[
+  ()=>document.getElementById('fullname').value.trim(),
+  ()=>document.getElementById('phone').value.trim(),
+  ()=>document.getElementById('topic').value.trim(),
+  ()=>document.querySelector('input[name=level]:checked'),
+  ()=>document.querySelector('input[name=purpose]:checked'),
+  ()=>document.querySelector('input[name=language]:checked'),
+  ()=>document.querySelector('input[name=pages]:checked'),
+  ()=>document.getElementById('deadline').value.trim(),
+  ()=>document.querySelector('input[name=urgency]:checked'),
+];
+const persianNums=['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
+function toPersian(n){return String(n).split('').map(c=>persianNums[+c]??c).join('');}
+
+function updateProg(){
+  const done=fields.filter(f=>f()).length;
+  const p=Math.round(done/fields.length*100);
+  document.getElementById('pFill').style.width=p+'%';
+  document.getElementById('pPct').textContent=toPersian(p)+'٪';
+}
+document.querySelectorAll('input,textarea').forEach(el=>{
+  el.addEventListener('input',updateProg);
+  el.addEventListener('change',updateProg);
 });
 
-// ── Helpers ──
-function getRadio(name) {
-  const el = document.querySelector(`input[name="${name}"]:checked`);
-  return el ? el.value : '—';
+/* ══ RIPPLE ══ */
+function addRipple(btn,e){
+  const r=document.createElement('span');
+  const rect=btn.getBoundingClientRect();
+  const size=Math.max(rect.width,rect.height);
+  r.className='ripple';
+  r.style.cssText=`width:${size}px;height:${size}px;left:${e.clientX-rect.left-size/2}px;top:${e.clientY-rect.top-size/2}px`;
+  btn.appendChild(r);
+  setTimeout(()=>r.remove(),700);
 }
-function val(id) {
-  const el = document.getElementById(id);
-  return el && el.value.trim() ? el.value.trim() : '—';
-}
 
-// ── Submit ──
-async function submitForm() {
-  const btn = document.getElementById('submitBtn');
-  const errorBox = document.getElementById('errorBox');
-  errorBox.style.display = 'none';
+/* ══ HELPERS ══ */
+const BOT='8525733249:AAEXaI_hiFNxRMQQaevUQP9zEUWX9FMTLRo';
+const CID='492462009';
+function rd(n){const e=document.querySelector(`input[name="${n}"]:checked`);return e?e.value:'—';}
+function vl(id){const e=document.getElementById(id);return e&&e.value.trim()?e.value.trim():'—';}
 
-  const fullname = document.getElementById('fullname').value.trim();
-  if (!fullname) { alert('لطفاً نام و نام خانوادگی را وارد کنید.'); return; }
-  const phone = document.getElementById('phone').value.trim();
-  if (!phone) { alert('لطفاً شماره تماس را وارد کنید.'); return; }
-  const topic = document.getElementById('topic').value.trim();
-  if (!topic) { alert('لطفاً موضوع پروپوزل را وارد کنید.'); return; }
+/* ══ SUBMIT ══ */
+async function doSubmit(e){
+  addRipple(document.getElementById('submitBtn'),e);
+  const btn=document.getElementById('submitBtn');
+  const err=document.getElementById('errBox');
+  err.style.display='none';
 
-  const purposeRaw = getRadio('purpose');
-  const purpose = purposeRaw === 'سایر' ? 'سایر: ' + val('purpose_other') : purposeRaw;
-  const langRaw = getRadio('language');
-  const language = langRaw === 'سایر' ? 'سایر: ' + val('language_other') : langRaw;
+  const name=document.getElementById('fullname').value.trim();
+  const phone=document.getElementById('phone').value.trim();
+  const topic=document.getElementById('topic').value.trim();
 
-  const msg = `
-📋 *سفارش جدید پروپوزل*
+  if(!name){alert('لطفاً نام کامل را وارد کنید.');return;}
+  if(!phone){alert('لطفاً شماره تماس را وارد کنید.');return;}
+  if(!topic){alert('لطفاً موضوع پروپوزل را وارد کنید.');return;}
+
+  const pr=rd('purpose'); const purpose=pr==='سایر'?'سایر: '+vl('purpose_other'):pr;
+  const lg=rd('language'); const lang=lg==='سایر'?'سایر: '+vl('language_other'):lg;
+
+  const msg=`📋 *سفارش جدید پروپوزل*
 ━━━━━━━━━━━━━━━━━━━━
 
 👤 *اطلاعات عمومی*
-• نام: ${fullname}
-• شماره تماس: ${val('phone')}
-• رشته: ${val('field_study')}
-• مقطع: ${getRadio('level')}
-• دانشگاه: ${val('university')}
+• نام: ${name}
+• شماره تماس: ${phone}
+• رشته: ${vl('field_study')}
+• مقطع: ${rd('level')}
+• دانشگاه: ${vl('university')}
 
 🎯 *اطلاعات پروپوزل*
 • هدف: ${purpose}
 • موضوع: ${topic}
-• محل اجرا: ${val('location')}
-• جامعه هدف: ${val('target')}
+• محل اجرا: ${vl('location')}
+• جامعه هدف: ${vl('target')}
 
 🔬 *جزئیات علمی*
-• نوع کار: ${getRadio('work_type')}
-• روش تحقیق: ${val('method')}
-• قالب استاد: ${getRadio('template')}
-• سبک رفرنس: ${getRadio('reference')}
+• نوع کار: ${rd('work_type')}
+• روش تحقیق: ${vl('method')}
+• قالب استاد: ${rd('template')}
+• سبک رفرنس: ${rd('reference')}
 
 📄 *مشخصات فایل*
-• زبان: ${language}
-• حجم: ${getRadio('pages')}
+• زبان: ${lang}
+• حجم: ${rd('pages')}
 
 ⏰ *زمان‌بندی*
-• ددلاین: ${val('deadline')}
-• فوریت: ${getRadio('urgency')}
+• ددلاین: ${vl('deadline')}
+• فوریت: ${rd('urgency')}
 
 📎 *موارد تکمیلی*
-• قبلاً نوشته: ${getRadio('existing')}
-• توضیحات: ${val('extra')}
-• نکات خاص: ${val('notes')}
+• قبلاً نوشته: ${rd('existing')}
+• توضیحات: ${vl('extra')}
+• نکات خاص: ${vl('notes')}
 
 ━━━━━━━━━━━━━━━━━━━━
-🕐 ${new Date().toLocaleString('fa-IR')}
-  `.trim();
+🕐 ${new Date().toLocaleString('fa-IR')}`.trim();
 
-  btn.disabled = true;
-  btn.innerHTML = 'در حال ارسال... <span class="spinner"></span>';
+  btn.disabled=true;
+  btn.innerHTML='در حال ارسال... <span class="spinner"></span>';
 
-  try {
-    const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ chat_id: CHAT_ID, text: msg, parse_mode: 'Markdown' })
+  try{
+    const res=await fetch(`https://api.telegram.org/bot${BOT}/sendMessage`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({chat_id:CID,text:msg,parse_mode:'Markdown'})
     });
-
-    const data = await res.json();
-
-    if (data.ok) {
-      document.getElementById('mainForm').style.display = 'none';
-      document.querySelector('.progress-wrap').style.display = 'none';
-      document.querySelector('.header').style.display = 'none';
-      document.getElementById('successScreen').style.display = 'block';
-    } else {
-      throw new Error(data.description || 'خطای ناشناخته');
-    }
-  } catch (err) {
-    errorBox.textContent = '⚠️ خطا: ' + err.message;
-    errorBox.style.display = 'block';
-    btn.disabled = false;
-    btn.innerHTML = 'ارسال سفارش ✦';
+    const d=await res.json();
+    if(d.ok){
+      document.getElementById('mainForm').style.display='none';
+      document.getElementById('progWrap').style.display='none';
+      document.getElementById('heroHeader').style.display='none';
+      document.getElementById('successScreen').style.display='block';
+    } else throw new Error(d.description||'خطای ناشناخته');
+  }catch(ex){
+    err.textContent='⚠️ خطا: '+ex.message;
+    err.style.display='block';
+    btn.disabled=false;
+    btn.innerHTML='ارسال سفارش ✦';
   }
 }
 </script>
